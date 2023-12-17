@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据库期末大作业</title>
+    <link rel="stylesheet" href="../static/plugins/bootstrap-3.4.1/css/bootstrap.css">
+    <link rel="stylesheet" href="../static/plugins/font-awesome-4.7.0/css/font-awesome.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+            background: #eee;
+        }
+
+        .nav button {
+            text-decoration: none;
+            padding: 8px 15px;
+            margin: 0 10px;
+            color: #333;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .nav a {
+            text-decoration: none;
+            padding: 8px 15px;
+            margin: 0 10px;
+            color: #333;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .nav button:hover {
+            background-color: #ddd;
+        }
+
+        .nav a:hover {
+            background-color: #ddd;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        label {
+            align-self: flex-start;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: none;
+            background-color: #333;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #444;
+        }
+
+        div a {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f8f8f8;
+            color: #333;
+            text-decoration: none;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        div a:hover {
+            background-color: #e8e8e8;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Welcome to the Database Web Application</h1>
+</div>
+<div class="nav">
+    <a href="/home/?show_data=player">Player</a>
+    <a href="/home/?show_data=team">Team</a>
+    <a href="/home/?show_data=city">City</a>
+    <a href="/home/?show_data=contract">Contract</a>
+    <a href="/home/?show_data=game">Game</a>
+    <a href="/home/?show_data=country">Country</a>
+    <a href="/home/?show_data=coach">Coach</a>
+    <a href="/home/?show_data=draft">Draft</a>
+    <a href="/home/?show_data=owner">Owner</a>
+    <a href="/home/?show_data=season">Season</a>
+    <a href="/home/?show_data=champion">Champion</a>
+    <a href="/home/?ask=true"><i class="fa fa-search" aria-hidden="true"></i>Search</a>
+</div>
+<div class="container">
+    {% if ask == 'true' %}
+        {% if show_query_result == 'none' %}
+            <div><a href="/home/?ask=true&set_query=1">队友</a></div>
+            <div><a href="/home/?ask=true&set_query=2">同年选秀</a></div>
+            <div><a href="/home/?ask=true&set_query=3">不是由选秀进入联盟</a></div>
+            <div><a href="/home/?ask=true&set_query=4">各国球员人数前十名</a></div>
+            <div><a href="/home/?ask=true&set_query=5">为多于1支球队夺得过总冠军的球员</a></div>
+            <div><a href="/home/?ask=true&set_query=6">比球队平均身高高的球员</a></div>
+            <div><a href="/home/?ask=true&set_query=7">为洛杉矶所有球队打过球的球员</a></div>
+            <div><a href="/home/?ask=true&set_query=8">比某只球队全员都高的球员</a></div>
+            <div><a href="/home/?ask=true&set_query=9">在2016-2018年间均夺得总冠军的球队</a></div>
+            <div><a href="/home/?ask=true&set_query=10">拥有多支球队的城市</a></div>
+        {% elif show_query_result == "1" or show_query_result == "2" %}
+            <table class="table">
+                <tbody>
+                {% for team, players in query_result.items %}
+                    <tr>
+                        <td>{{ team }}</td>
+                        {% for player in players %}
+                            <td>{{ player }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% elif show_query_result == '3' %}
+            <table class="table">
+            <tbody>
+            {% for player in query_result %}
+                <tr>
+                    <td>{{ player }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <table>
+        {% elif show_query_result == '4' %}
+            <table class="table">
+                <tbody>
+                {% for country, cnt in query_result.items %}
+                    <tr>
+                        <td>{{ country }}</td>
+                        <td>{{ cnt }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% elif show_query_result == '6' %}
+            <table class="table">
+                <tbody>
+                {% for player, team,avg_height in query_result %}
+                    <tr>
+                        <td>{{ player }}</td>
+                        <td>{{ team }}</td>
+                        <td>{{ avg_height }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {#        <form method="post">#}
+            {#            {% csrf_token %}#}
+            {#            <div>#}
+            {#                <input type="checkbox" id="select" name="query" checked class="checkbox-inline">#}
+            {#                <label for="select">查询</label>#}
+            {#                <input type="checkbox" id="update" name="update" class="checkbox-inline">#}
+            {#                <label for="update">修改</label>#}
+            {#                <input type="checkbox" id="insert" name="insert" class="checkbox-inline">#}
+            {#                <label for="insert">添加</label>#}
+            {#                <input type="checkbox" id="delete" name="delete" class="checkbox-inline">#}
+            {#                <label for="delete">删除</label>#}
+            {#            </div>#}
+            {#            <label for="query">Enter your SQL query:</label>#}
+            {#            <textarea id="query" name="query_sentence" rows="10" cols="50"></textarea>#}
+            {#            <input type="submit" value="Submit">#}
+            {#        </form>#}
+        {% endif %}
+    {% elif q_res == 'true' %}
+        <table class="table">
+            <tbody>
+            {% for item in info %}
+                <tr>
+                    {% for it in item %}
+                        <td>{{ it }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <table class="table">
+            <thead>
+            <tr>
+                {% for it in th %}
+                    <th>{{ it }}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% if type == 'player' %}
+                {% for item in info %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.team.name }}</td>
+                        <td>{{ item.age }}</td>
+                        <td>{{ item.height }}</td>
+                        <td>{{ item.pos }}</td>
+                        <td>{{ item.country.name }}</td>
+                    </tr>
+                {% endfor %}
+            {% elif type == 'team' %}
+                {% for item in info %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.city.name }}</td>
+                        <td>{{ item.arena }}</td>
+                    </tr>
+                {% endfor %}
+            {% elif type == 'game' %}
+                {% for item in info %}
+                    <tr>
+                        <td>{{ item.home.name }}</td>
+                        <td>{{ item.away.name }}</td>
+                        <td>{{ item.home_score }}</td>
+                        <td>{{ item.away_score }}</td>
+                        <td>{{ item.date }}</td>
+                    </tr>
+                {% endfor %}
+            {% elif type == 'coach' %}
+                {% for item in info %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.team.name }}</td>
+                        <td>{{ item.age }}</td>
+                        <td>{{ item.CoachingExperinece }}</td>
+                    </tr>
+                {% endfor %}
+            {% elif type == 'owner' %}
+                {% for item in info %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.corporation }}</td>
+                        <td>{{ item.age }}</td>
+                        <td>{{ item.team.name }}</td>
+                    </tr>
+                {% endfor %}
+            {% elif type == 'country' %}
+                {% for item in info %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.continent }}</td>
+                        <td>{{ item.rank }}</td>
+                        <td>{{ item.national_league }}</td>
+                    </tr>
+                {% endfor %}
+            {% elif type == 'city' %}
+                {% for item in info %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.state }}</td>
+                    </tr>
+                {% endfor %}
+            {% elif type == 'contract' %}
+                {% for item in info %}
+                    <tr>
+                        <td>{{ item.player.name }}</td>
+                        <td>{{ item.team.name }}</td>
+                        <td>{{ item.salary }}</td>
+                        <td>{{ item.StartDate }}</td>
+                        <td>{{ item.EndDate }}</td>
+                    </tr>
+                {% endfor %}
+            {% elif type == 'draft' %}
+                {% for item in info %}
+                    <tr>
+                        <td>{{ item.player.name }}</td>
+                        <td>{{ item.team.name }}</td>
+                        <td>{{ item.year }}</td>
+                        <td>{{ item.pick }}</td>
+                    </tr>
+                {% endfor %}
+            {% elif type == 'season' %}
+                {% for item in info %}
+                    <tr>
+                        <td>{{ item.year }}</td>
+                        <td>{{ item.champion.name }}</td>
+                        <td>{{ item.mvp.name }}</td>
+                        <td>{{ item.scoring_title.name }}</td>
+                    </tr>
+                {% endfor %}
+            {% elif type == 'champion' %}
+                {% for item in info %}
+                    <tr>
+                        <td>{{ item.year }}</td>
+                        <td>{{ item.team.name }}</td>
+                        <td>{{ fmvp.name }}</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+
+<script>
+    var checkboxes = document.querySelectorAll('.checkbox-inline');
+    checkboxes.forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
+            checkboxes.forEach(function (c) {
+                if (c !== checkbox) c.checked = false;
+            });
+        });
+    });
+</script>
+</body>
+</html>
