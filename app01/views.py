@@ -77,6 +77,18 @@ def home(request):
             show_query_result = '4'
             cursor.close()
             conn.close()
+        elif query_id == '5':
+            sql = '''select T.fmvp
+                    from champion as T, season as S
+                    where T.year = S.year and T.fmvp = S.mvp;'''
+            cursor.execute(sql)
+            sql_result = cursor.fetchall()
+            team_dict = []
+            for player in sql_result:
+                team_dict.append(player[0])
+            show_query_result = '5'
+            cursor.close()
+            conn.close()
         elif query_id == '6':
             sql = '''select T.name, T.team, (select avg(height) from player as S where T.team = S.team) as average_height
                     from player as T
@@ -90,6 +102,67 @@ def home(request):
                 team_dict.append([player,team,avg_height])
             show_query_result = '6'
             print(team_dict)
+            cursor.close()
+            conn.close()
+        elif query_id == '7':
+            sql = '''select distinct T.player
+                    from contract as T
+                    where not exists(
+		                        (select name
+                                from team
+                                where city="Los Angeles")
+                                except
+                                (select team
+                                from contract as S
+                                where T.player = S.player));'''
+            cursor.execute(sql)
+            sql_result = cursor.fetchall()
+            team_dict = []
+            for player in sql_result:
+                team_dict.append(player[0])
+            show_query_result = '7'
+            cursor.close()
+            conn.close()
+        elif query_id == '8':
+            sql = '''select distinct T.name
+                    from player as T,(select distinct team, max(height) as max_height
+                    from player
+                    group by team) as S
+                    where T.height > S.max_height;'''
+            cursor.execute(sql)
+            sql_result = cursor.fetchall()
+            team_dict = []
+            for player in sql_result:
+                team_dict.append(player[0])
+            show_query_result = '8'
+            cursor.close()
+            conn.close()
+        elif query_id == '9':
+            sql = '''select T.name, T.team
+                    from owner as T, (select team
+                    from champion 
+                    group by team
+                    having count(year)>1) as S
+                    where T.team = S.team;'''
+            cursor.execute(sql)
+            sql_result = cursor.fetchall()
+            team_dict = []
+            for owner,team in sql_result:
+                team_dict.append([owner,team])
+            show_query_result = '9'
+            cursor.close()
+            conn.close()
+        elif query_id == '10':
+            sql = '''select city
+                    from team
+                    group by city
+                    having count(name)>1;'''
+            cursor.execute(sql)
+            sql_result = cursor.fetchall()
+            team_dict = []
+            for city in sql_result:
+                team_dict.append(city[0])
+            show_query_result = '10'
             cursor.close()
             conn.close()
         show_data = request.GET.get('show_data', 'none')
@@ -126,7 +199,7 @@ def home(request):
               'city': ['name', 'state'],
               'contract': ['player', 'team', 'salary', 'StartDate', 'EndDate'],
               'draft': ['player', 'team', 'year', 'pick'],
-              'season': ['year', 'champion', 'mvp', 'scoring_title'],
+              'season': ['year', 'champion', 'mvp'],
               'champion': ['year', 'team', 'fmvp'],
               'none': []}
         ask = request.GET.get('ask', 'none')
@@ -143,12 +216,12 @@ def home(request):
             cursor.execute(sql)
             conn.commit()
             cursor.close()
-            return render(request, "home.html",{'ask':'true'})
+            return render(request, "home.html")
         else:
             sql = request.POST.get('query_sentence', 'none')
             cursor.execute(sql)
             info = cursor.fetchall()
             cursor.close()
-            return render(request, "home.html", {"q_res": 'true',"info": info})
+            return render(request, "home.html",{"free_show_res":'true',"free_info":info})
 
 

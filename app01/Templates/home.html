@@ -128,12 +128,13 @@
             <div><a href="/home/?ask=true&set_query=2">同年选秀</a></div>
             <div><a href="/home/?ask=true&set_query=3">不是由选秀进入联盟</a></div>
             <div><a href="/home/?ask=true&set_query=4">各国球员人数前十名</a></div>
-            <div><a href="/home/?ask=true&set_query=5">为多于1支球队夺得过总冠军的球员</a></div>
+            <div><a href="/home/?ask=true&set_query=5">同年获得mvp和fmvp的球员</a></div>
             <div><a href="/home/?ask=true&set_query=6">比球队平均身高高的球员</a></div>
             <div><a href="/home/?ask=true&set_query=7">为洛杉矶所有球队打过球的球员</a></div>
             <div><a href="/home/?ask=true&set_query=8">比某只球队全员都高的球员</a></div>
-            <div><a href="/home/?ask=true&set_query=9">在2016-2018年间均夺得总冠军的球队</a></div>
+            <div><a href="/home/?ask=true&set_query=9">夺得过多次冠军的老板</a></div>
             <div><a href="/home/?ask=true&set_query=10">拥有多支球队的城市</a></div>
+            <div><a href="/home/?ask=free">自由操作</a></div>
         {% elif show_query_result == "1" or show_query_result == "2" %}
             <table class="table">
                 <tbody>
@@ -168,6 +169,16 @@
                 {% endfor %}
                 </tbody>
             </table>
+        {% elif show_query_result == '5' %}
+            <table class="table">
+                <tbody>
+                {% for player in query_result %}
+                    <tr>
+                        <td>{{ player }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         {% elif show_query_result == '6' %}
             <table class="table">
                 <tbody>
@@ -180,27 +191,68 @@
                 {% endfor %}
                 </tbody>
             </table>
-            {#        <form method="post">#}
-            {#            {% csrf_token %}#}
-            {#            <div>#}
-            {#                <input type="checkbox" id="select" name="query" checked class="checkbox-inline">#}
-            {#                <label for="select">查询</label>#}
-            {#                <input type="checkbox" id="update" name="update" class="checkbox-inline">#}
-            {#                <label for="update">修改</label>#}
-            {#                <input type="checkbox" id="insert" name="insert" class="checkbox-inline">#}
-            {#                <label for="insert">添加</label>#}
-            {#                <input type="checkbox" id="delete" name="delete" class="checkbox-inline">#}
-            {#                <label for="delete">删除</label>#}
-            {#            </div>#}
-            {#            <label for="query">Enter your SQL query:</label>#}
-            {#            <textarea id="query" name="query_sentence" rows="10" cols="50"></textarea>#}
-            {#            <input type="submit" value="Submit">#}
-            {#        </form>#}
+        {% elif show_query_result == '7' %}
+            <table class="table">
+                <tbody>
+                {% for player in query_result %}
+                    <tr>
+                        <td>{{ player }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% elif show_query_result == '8' %}
+            <table class="table">
+                <tbody>
+                {% for player in query_result %}
+                    <tr>
+                        <td>{{ player }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% elif show_query_result == '9' %}
+            <table class="table">
+                <tbody>
+                {% for owner,team in query_result %}
+                    <tr>
+                        <td>{{ owner }}</td>
+                        <td>{{ team }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% elif show_query_result == '10' %}
+            <table class="table">
+            <tbody>
+            {% for city in query_result %}
+                <tr>
+                    <td>{{ city }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
         {% endif %}
-    {% elif q_res == 'true' %}
+    {% elif ask == 'free' %}
+        <form method="post">
+            {% csrf_token %}
+            <div>
+                <input type="checkbox" id="select" name="query" checked class="checkbox-inline">
+                <label for="select">查询</label>
+                <input type="checkbox" id="update" name="update" class="checkbox-inline">
+                <label for="update">修改</label>
+                <input type="checkbox" id="insert" name="insert" class="checkbox-inline">
+                <label for="insert">添加</label>
+                <input type="checkbox" id="delete" name="delete" class="checkbox-inline">
+                <label for="delete">删除</label>
+            </div>
+            <label for="query">Enter your SQL query:</label>
+            <textarea id="query" name="query_sentence" rows="10" cols="50"></textarea>
+            <input type="submit" value="Submit">
+        </form>
+    {% elif free_show_res == 'true' %}
         <table class="table">
             <tbody>
-            {% for item in info %}
+            {% for item in free_info %}
                 <tr>
                     {% for it in item %}
                         <td>{{ it }}</td>
@@ -315,7 +367,7 @@
                     <tr>
                         <td>{{ item.year }}</td>
                         <td>{{ item.team.name }}</td>
-                        <td>{{ fmvp.name }}</td>
+                        <td>{{ item.fmvp.name }}</td>
                     </tr>
                 {% endfor %}
             {% endif %}

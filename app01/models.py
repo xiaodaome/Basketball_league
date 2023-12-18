@@ -70,8 +70,8 @@ class Contract(models.Model):
     salary = models.IntegerField()
     player = models.ForeignKey(Player, on_delete=models.CASCADE, db_column='player')
     team = models.ForeignKey(Team, on_delete=models.CASCADE, db_column='team')
-    StartDate = models.DateField()
-    EndDate = models.DateField()
+    StartDate = models.IntegerField()
+    EndDate = models.IntegerField()
     class Meta:
         db_table = 'contract'
         unique_together = (('player', 'team','StartDate'))
@@ -81,7 +81,6 @@ class Season(models.Model):
     year = models.IntegerField(primary_key=True)
     champion = models.ForeignKey(Team, on_delete=models.CASCADE, db_column='champion')
     mvp = models.ForeignKey(Player, related_name="mvp", on_delete=models.CASCADE, db_column='mvp')
-    scoring_title = models.ForeignKey(Player, related_name="scoring_title", on_delete=models.CASCADE, db_column='scoring_title')
     class Meta:
         db_table = 'season'
 
