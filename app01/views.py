@@ -62,7 +62,7 @@ def home(request):
             cursor.close()
             conn.close()
         elif query_id == '4':
-            sql = '''select country, count(*) as player_count
+            sql = '''select country, count(name) as player_count
                         from player
                         where country != 'USA'
                         group by country
@@ -203,7 +203,8 @@ def home(request):
               'champion': ['year', 'team', 'fmvp'],
               'none': []}
         ask = request.GET.get('ask', 'none')
-        return render(request, "home.html", {"type": show_data, "info": info, "th": th[show_data],'ask':ask,"query_result":team_dict,"show_query_result":show_query_result})
+        return render(request, "home.html", {"type": show_data, "info": info, "th": th[show_data],
+                                             'ask':ask,"query_result":team_dict,"show_query_result":show_query_result})
     elif request.method == "POST":
         conn = pymysql.connect(host="localhost", port=3306, user='root', password='Chen20020719fd',
                                database='basketball_league', charset='utf8')
